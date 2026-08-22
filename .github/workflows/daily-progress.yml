@@ -1,0 +1,64 @@
+name: Daily Data Science Progress
+
+on:
+  schedule:
+    - cron: "30 21 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  create-daily-log:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Create today's progress file
+        shell: bash
+        run: |
+          DATE=$(TZ=Asia/Kolkata date +%F)
+          DAY=$(TZ=Asia/Kolkata date +%j)
+          FILE="daily-progress/day-${DAY}-${DATE}.md"
+
+          if [ -f "$FILE" ]; then
+            echo "Today's log already exists: $FILE"
+            exit 0
+          fi
+
+          cat > "$FILE" <<EOF
+# 📚 Data Science Daily Progress — ${DATE}
+
+## 🎯 Today's Focus
+- 
+
+## 📖 What I Learned
+- 
+
+## 💻 What I Practiced
+- 
+
+## 🧪 Project / Experiment
+- 
+
+## 💡 Key Takeaway
+- 
+
+## 🔜 Next Step
+- 
+EOF
+
+          git config user.name "Data Science Journey Bot"
+         git config user.email "debajyotisardar753@gmail.com"
+
+          git add "$FILE"
+
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+
+          git commit -m "docs: add daily progress for ${DATE}"
+          git push
