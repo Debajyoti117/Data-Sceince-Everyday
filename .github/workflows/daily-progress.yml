@@ -22,7 +22,7 @@ jobs:
         run: |
           DATE=$(TZ=Asia/Kolkata date +%F)
           DAY=$(TZ=Asia/Kolkata date +%j)
-          FILE="daily-progress/day-${DAY}-${DATE}.md"
+          FILE="Data-Science-Daily-Journey/daily-progress/day-${DAY}-${DATE}.md"
 
           if [ -f "$FILE" ]; then
             echo "Today's log already exists: $FILE"
