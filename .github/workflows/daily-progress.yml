@@ -3,6 +3,7 @@ name: Daily Data Science Progress
 on:
   schedule:
     - cron: "30 21 * * *"
+      timezone: "Asia/Kolkata"
   workflow_dispatch:
 
 permissions:
@@ -29,29 +30,29 @@ jobs:
           fi
 
           cat > "$FILE" <<EOF
-# 📚 Data Science Daily Progress — ${DATE}
+          # 📚 Data Science Daily Progress — ${DATE}
 
-## 🎯 Today's Focus
-- 
+          ## 🎯 Today's Focus
+          - 
 
-## 📖 What I Learned
-- 
+          ## 📖 What I Learned
+          - 
 
-## 💻 What I Practiced
-- 
+          ## 💻 What I Practiced
+          - 
 
-## 🧪 Project / Experiment
-- 
+          ## 🧪 Project / Experiment
+          - 
 
-## 💡 Key Takeaway
-- 
+          ## 💡 Key Takeaway
+          - 
 
-## 🔜 Next Step
-- 
-EOF
+          ## 🔜 Next Step
+          - 
+          EOF
 
           git config user.name "Data Science Journey Bot"
-         git config user.email "debajyotisardar753@gmail.com"
+          git config user.email "debajyotisardar753@gmail.com"
 
           git add "$FILE"
 
