@@ -10,56 +10,87 @@ permissions:
   contents: write
 
 jobs:
-  create-daily-log:
+  daily-progress:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
-      - name: Create today's progress file
-        shell: bash
+      - name: Configure git
         run: |
-          DATE=$(TZ=Asia/Kolkata date +%F)
-          DAY=$(TZ=Asia/Kolkata date +%j)
-          FILE="Data-Science-Daily-Journey/daily-progress/day-${DAY}-${DATE}.md"
-
-          if [ -f "$FILE" ]; then
-            echo "Today's log already exists: $FILE"
-            exit 0
-          fi
-
-          cat > "$FILE" <<EOF
-          # 📚 Data Science Daily Progress — ${DATE}
-
-          ## 🎯 Today's Focus
-          - 
-
-          ## 📖 What I Learned
-          - 
-
-          ## 💻 What I Practiced
-          - 
-
-          ## 🧪 Project / Experiment
-          - 
-
-          ## 💡 Key Takeaway
-          - 
-
-          ## 🔜 Next Step
-          - 
-          EOF
-
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          git add "$FILE"
+      - name: Create daily log entry
+        run: |
+          DATE=$(TZ=Asia/Kolkata date +%Y-%m-%d)
+          DAY=$(TZ=Asia/Kolkata date +%j)
 
-          if git diff --cached --quiet; then
-            echo "No changes to commit."
-            exit 0
+          FILE="Data-Science-Daily-Journey/daily-progress/day-${DAY}-${DATE}.md"
+
+          if [ ! -f "$FILE" ]; then
+            {
+              echo "# 📊 Day ${DAY} — ${DATE}"
+              echo ""
+              echo "## 🎯 Today's Focus"
+              echo "- Add today's Data Science topic here."
+              echo ""
+              echo "## 📖 What I Learned"
+              echo "- Add today's learning here."
+              echo ""
+              echo "## 💻 What I Practiced"
+              echo "- Add today's coding/practice work here."
+              echo ""
+              echo "## 🧪 Project / Experiment"
+              echo "- Add today's project or experiment here."
+              echo ""
+              echo "## 💡 Key Takeaway"
+              echo "- Add the most important thing learned today."
+              echo ""
+              echo "## 🔜 Next Step"
+              echo "- Add tomorrow's learning goal."
+            } > "$FILE"
+
+            git add "$FILE"
+            git commit -m "docs: add day ${DAY} progress log"
+            git push
           fi
 
-          git commit -m "docs: add daily progress for ${DATE}"
-          git push
+      - name: Create practice snippet placeholder
+        run: |
+          DAY=$(TZ=Asia/Kolkata date +%j)
+
+          FILE="Data-Science-Daily-Journey/daily-progress/practice/day-${DAY}-practice.py"
+
+          if [ ! -f "$FILE" ]; then
+            mkdir -p "Data-Science-Daily-Journey/daily-progress/practice"
+
+            echo "# Practice code for Day ${DAY}" > "$FILE"
+            echo "# Replace this with today's Python/Data Science exercise." >> "$FILE"
+
+            git add "$FILE"
+            git commit -m "feat: add day ${DAY} practice placeholder"
+            git push
+          fi
+
+      - name: Create notes placeholder
+        run: |
+          DAY=$(TZ=Asia/Kolkata date +%j)
+
+          FILE="Data-Science-Daily-Journey/daily-progress/notes/day-${DAY}-notes.md"
+
+          if [ ! -f "$FILE" ]; then
+            mkdir -p "Data-Science-Daily-Journey/daily-progress/notes"
+
+            {
+              echo "# 📝 Notes — Day ${DAY}"
+              echo ""
+              echo "- Write key Data Science concepts learned today."
+              echo "- Add useful formulas, definitions, or observations."
+            } > "$FILE"
+
+            git add "$FILE"
+            git commit -m "docs: add day ${DAY} notes placeholder"
+            git push
+          fi
